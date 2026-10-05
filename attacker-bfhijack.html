@@ -11,46 +11,39 @@
 
 <h1>evil-bfcache.test</h1>
 
-<p>
-  This is the attacker page (its renderer process is assumed compromised).
-</p>
+<p>This is the attacker page (its renderer process is assumed compromised).</p>
 
 <p>
   Navigating this tab to the victim in 3 seconds…
-</p>
-
-<p>
   After navigation, this document may be stored in the back/forward cache.
-  In the vulnerable Chromium scenario, a compromised renderer may still be
-  able to send Media Session IPCs from the cached frame.
 </p>
 
 <h2>BFCache status</h2>
 <pre id="status">Waiting...</pre>
 
 <script>
-  const status = document.getElementById("status");
+const status = document.getElementById("status");
 
-  window.addEventListener("pagehide", event => {
+window.addEventListener("pagehide", event => {
     console.log("[ATTACKER] pagehide");
     console.log("[ATTACKER] BFCache:", event.persisted);
 
     status.textContent =
-      "pagehide\nBFCache: " + event.persisted;
-  });
+        "pagehide\nBFCache: " + event.persisted;
+});
 
-  window.addEventListener("pageshow", event => {
+window.addEventListener("pageshow", event => {
     console.log("[ATTACKER] pageshow");
     console.log("[ATTACKER] BFCache restore:", event.persisted);
 
     status.textContent =
-      "pageshow\nBFCache restore: " + event.persisted;
-  });
+        "pageshow\nBFCache restore: " + event.persisted;
+});
 
-  setTimeout(() => {
+setTimeout(() => {
     console.log("[ATTACKER] Navigating to victim...");
 
     location.href =
-      "https://rhadityathinkpad-web.github.io/bfcache-poc/victim.html";
-  }, 3000);
+        "https://rhadityathinkpad-web.github.io/bfcache-poc/victim.html";
+}, 3000);
 </script>
